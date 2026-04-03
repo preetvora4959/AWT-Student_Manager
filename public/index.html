@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Manager</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 10px 15px;
+  background: green;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+th {
+  background: black;
+  color: white;
+}
+
+.delete-btn {
+  background: red;
+}
+
+#msg {
+  margin-top: 10px;
+  font-weight: bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Student Manager</h1>
+
+<input type="text" id="name" placeholder="Name">
+<input type="email" id="email" placeholder="Email">
+<input type="text" id="course" placeholder="Course">
+
+<button onclick="addStudent()">Add Student</button>
+
+<div id="msg"></div>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Course</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="table"></tbody>
+</table>
+
+</div>
+
+<script>
+const api = "/api/students";
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function load() {
+  const res = await fetch(api);
+  const data = await res.json();
+
+  const table = document.getElementById("table");
+  table.innerHTML = "";
+
+  data.data.forEach(s => {
+    table.innerHTML += `
+      <tr>
+        <td>${s.id}</td>
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.course}</td>
+        <td><button class="delete-btn" onclick="del(${s.id})">Delete</button></td>
+      </tr>
+    `;
+  });
+}
+
+async function addStudent() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const course = document.getElementById("course").value.trim();
+
+  const msg = document.getElementById("msg");
+
+  if (!name || !email || !course) {
+    msg.innerText = "All fields are required";
+    msg.style.color = "red";
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    msg.innerText = "Enter valid email address";
+    msg.style.color = "red";
+    return;
+  }
+
+  await fetch(api, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, course })
+  });
+
+  msg.innerText = "Student added successfully";
+  msg.style.color = "green";
+
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("course").value = "";
+
+  load();
+}
+
+async function del(id) {
+  const res = await fetch(api + "/" + id, { method: "DELETE" });
+  const data = await res.json();
+
+  const msg = document.getElementById("msg");
+  msg.innerText = data.message;
+  msg.style.color = "green";
+
+  load();
+}
+
+load();
+</script>
+
+</body>
+</html>
