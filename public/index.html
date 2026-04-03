@@ -119,33 +119,33 @@ th {
 
 const api = "/api/students";
 
+window.onload = async () => {
+  await fetch('/api/clear', { method: "DELETE" });
+  load();
+};
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 async function load() {
-  try {
-    const res = await fetch(api);
-    const data = await res.json();
+  const res = await fetch(api);
+  const data = await res.json();
 
-    const table = document.getElementById("table");
-    table.innerHTML = "";
+  const table = document.getElementById("table");
+  table.innerHTML = "";
 
-    data.data.forEach(s => {
-      table.innerHTML += `
-        <tr>
-          <td>${s.id}</td>
-          <td>${s.name}</td>
-          <td>${s.email}</td>
-          <td>${s.course}</td>
-          <td><button class="delete-btn" onclick="del(${s.id})">Delete</button></td>
-        </tr>
-      `;
-    });
-  } catch (err) {
-    document.getElementById("msg").innerText = "Server error";
-    document.getElementById("msg").style.color = "red";
-  }
+  data.data.forEach(s => {
+    table.innerHTML += `
+      <tr>
+        <td>${s.id}</td>
+        <td>${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.course}</td>
+        <td><button class="delete-btn" onclick="del(${s.id})">Delete</button></td>
+      </tr>
+    `;
+  });
 }
 
 async function addStudent() {
@@ -183,16 +183,9 @@ async function addStudent() {
 }
 
 async function del(id) {
-  const res = await fetch(api + "/" + id, { method: "DELETE" });
-  const data = await res.json();
-
-  document.getElementById("msg").innerText = data.message;
-  document.getElementById("msg").style.color = "green";
-
+  await fetch(api + "/" + id, { method: "DELETE" });
   load();
 }
-
-load();
 
 </script>
 

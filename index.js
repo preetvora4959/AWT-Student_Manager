@@ -38,13 +38,14 @@ app.post('/api/students', (req, res) => {
 app.delete('/api/students/:id', (req, res) => {
   const id = parseInt(req.params.id);
 
-  const exists = students.some(s => s.id === id);
-  if (!exists) {
-    return res.status(404).json({ message: "Student not found" });
-  }
-
   students = students.filter(s => s.id !== id);
   res.json({ message: "Deleted successfully" });
+});
+
+app.delete('/api/clear', (req, res) => {
+  students = [];
+  currentId = 1;
+  res.json({ message: "Cleared" });
 });
 
 app.use((req, res) => {
