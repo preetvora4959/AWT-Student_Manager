@@ -9,7 +9,6 @@ body {
   background: #f5f5f5;
   padding: 20px;
 }
-
 .container {
   max-width: 700px;
   margin: auto;
@@ -17,51 +16,33 @@ body {
   padding: 25px;
   border-radius: 10px;
 }
-
-h1 {
-  text-align: center;
-}
-
+h1 { text-align: center; }
 input {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
-  box-sizing: border-box;
 }
-
 button {
-  padding: 10px 15px;
+  padding: 10px;
   background: green;
   color: white;
   border: none;
-  margin-top: 10px;
-  cursor: pointer;
 }
-
 table {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
 }
-
 th, td {
   border: 1px solid #ccc;
   padding: 10px;
 }
-
 th {
   background: black;
   color: white;
 }
-
-.delete-btn {
-  background: red;
-}
-
-#msg {
-  margin-top: 10px;
-  font-weight: bold;
-}
+.delete-btn { background: red; }
+#msg { margin-top: 10px; font-weight: bold; }
 </style>
 
 </head>
@@ -72,9 +53,9 @@ th {
 
 <h1>Student Manager</h1>
 
-<input type="text" id="name" placeholder="Name">
-<input type="email" id="email" placeholder="Email">
-<input type="text" id="course" placeholder="Course">
+<input id="name" placeholder="Name">
+<input id="email" placeholder="Email">
+<input id="course" placeholder="Course">
 
 <button onclick="addStudent()">Add Student</button>
 
@@ -90,7 +71,6 @@ th {
 <th>Action</th>
 </tr>
 </thead>
-
 <tbody id="table"></tbody>
 </table>
 
@@ -98,7 +78,7 @@ th {
 
 <script>
 
-const api = "/api/students";
+const api = "/students";
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -110,11 +90,6 @@ async function load() {
 
   const table = document.getElementById("table");
   table.innerHTML = "";
-
-  if (data.data.length === 0) {
-    table.innerHTML = `<tr><td colspan="5">No records found</td></tr>`;
-    return;
-  }
 
   data.data.forEach(s => {
     table.innerHTML += `
@@ -133,35 +108,32 @@ async function addStudent() {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const course = document.getElementById("course").value.trim();
-
   const msg = document.getElementById("msg");
 
   if (!name || !email || !course) {
-    msg.innerText = "All fields are required";
+    msg.innerText = "All fields required";
     msg.style.color = "red";
     return;
   }
 
   if (!isValidEmail(email)) {
-    msg.innerText = "Enter valid email address";
+    msg.innerText = "Invalid email";
     msg.style.color = "red";
     return;
   }
 
-  const res = await fetch(api, {
+  await fetch(api, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {"Content-Type":"application/json"},
     body: JSON.stringify({ name, email, course })
   });
-
-  const data = await res.json();
 
   msg.innerText = "Student added successfully";
   msg.style.color = "green";
 
-  document.getElementById("name").value = "";
-  document.getElementById("email").value = "";
-  document.getElementById("course").value = "";
+  document.getElementById("name").value="";
+  document.getElementById("email").value="";
+  document.getElementById("course").value="";
 
   load();
 }
@@ -170,9 +142,8 @@ async function del(id) {
   const res = await fetch(api + "/" + id, { method: "DELETE" });
   const data = await res.json();
 
-  const msg = document.getElementById("msg");
-  msg.innerText = data.message;
-  msg.style.color = "green";
+  document.getElementById("msg").innerText = data.message;
+  document.getElementById("msg").style.color = "green";
 
   load();
 }
