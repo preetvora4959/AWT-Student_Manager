@@ -4,11 +4,16 @@
 <title>Student Manager</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial;
   background: #f5f5f5;
   padding: 20px;
 }
+
 .container {
   max-width: 700px;
   margin: auto;
@@ -16,33 +21,50 @@ body {
   padding: 25px;
   border-radius: 10px;
 }
-h1 { text-align: center; }
+
+h1 {
+  text-align: center;
+}
+
 input {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
 }
+
 button {
   padding: 10px;
   background: green;
   color: white;
   border: none;
+  cursor: pointer;
 }
+
 table {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
 }
+
 th, td {
   border: 1px solid #ccc;
   padding: 10px;
+  text-align: center;
 }
+
 th {
   background: black;
   color: white;
 }
-.delete-btn { background: red; }
-#msg { margin-top: 10px; font-weight: bold; }
+
+.delete-btn {
+  background: red;
+}
+
+#msg {
+  margin-top: 10px;
+  font-weight: bold;
+}
 </style>
 
 </head>
